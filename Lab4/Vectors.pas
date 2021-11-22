@@ -13,13 +13,17 @@ type
 
   TVector2D = class(TInterfacedObject, IVector)
     private
-      x: double;
-      y: double;
+      fx: double;
+      fy: double;
     public
       constructor Create(Ax, Ay: double);
       function getComponents(): TDoubleArray;
       function abs(): double;
       function cdot(AVector: TObject): double;
+      function diff(AVector: TVector2D): TVector2D;
+      function getAngle(): double;
+      property x: double read fx write fx;
+      property y: double read fy write fy;
   end;
 
   TVectorVelocity = class(TVector2D, IVector)
@@ -42,6 +46,11 @@ begin
   y:= Ay;
 end;
 
+function TVector2D.diff(AVector: TVector2D): TVector2D;
+begin
+  Result:= TVector2D.Create(x-AVector.x, y-AVector.y);
+end;
+
 function TVector2D.abs: double;
 begin
   Result:= sqrt(x*x + y*y);
@@ -56,6 +65,11 @@ function TVector2D.getComponents(): TDoubleArray;
 begin
   setLength(Result, 2);
   Result[0]:= x; Result[1]:= y;
+end;
+
+function TVector2D.getAngle: double;
+begin
+  Result:= Tan(y/x);
 end;
 
 { TVectorVelocity }
