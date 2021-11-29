@@ -12,6 +12,9 @@
         <Projects Include="Lab5\Lab5.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Lab4Rewrite\Lab4Rewrite.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +50,23 @@
     <Target Name="Lab5:Make">
         <MSBuild Projects="Lab5\Lab5.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Lab4Rewrite">
+        <MSBuild Projects="Lab4Rewrite\Lab4Rewrite.dproj"/>
+    </Target>
+    <Target Name="Lab4Rewrite:Clean">
+        <MSBuild Projects="Lab4Rewrite\Lab4Rewrite.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Lab4Rewrite:Make">
+        <MSBuild Projects="Lab4Rewrite\Lab4Rewrite.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="Lab2;Lab4;Lab5"/>
+        <CallTarget Targets="Lab2;Lab4;Lab5;Lab4Rewrite"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Lab2:Clean;Lab4:Clean;Lab5:Clean"/>
+        <CallTarget Targets="Lab2:Clean;Lab4:Clean;Lab5:Clean;Lab4Rewrite:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Lab2:Make;Lab4:Make;Lab5:Make"/>
+        <CallTarget Targets="Lab2:Make;Lab4:Make;Lab5:Make;Lab4Rewrite:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
