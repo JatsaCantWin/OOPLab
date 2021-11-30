@@ -53,7 +53,7 @@ end;
 
 function TVector2D.abs: double;
 begin
-  Result:= sqrt(x*x + y*y);
+  Result:= sqrt(Self.x*Self.x + y*y);
 end;
 
 function TVector2D.cdot(AVector: TObject): double;
@@ -75,15 +75,22 @@ end;
 { TVectorVelocity }
 
 procedure TVectorVelocity.SetAngle(AAngle: double);
+var
+  r: double;
 begin
-  x:= sqrt(Sqr(abs())/(sqr(tan(AAngle))+1));
-  y:= tan(AAngle)*x;
+  r:= Self.abs();
+  x:= r*cos(AAngle);
+  y:= r*sin(AAngle);
+//  x:= sqrt(Sqr(Self.abs())/(sqr(tan(AAngle))+1));
+//  y:= tan(AAngle)*x;
 end;
 
 procedure TVectorVelocity.SetModule(AModule: double);
 var
   Angle: double;
 begin
+  if (y = 0) AND (x = 0) then
+    exit;
   Angle:= ArcTan(y/x);
   x:= sqrt(Sqr(AModule)/(sqr(tan(Angle))+1));
   y:= tan(Angle)*x;

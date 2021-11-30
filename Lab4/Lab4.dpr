@@ -11,10 +11,10 @@ uses
 type
   TPerson = class;
 
-  TPersonArray = array of TPerson;
+  TPersonState = class;
 
   IState = interface(IInterface)
-    function Handle(): IState;
+    function Handle(): TPersonState;
   end;
 
   TPersonState = class(TInterfacedObject, IState)
@@ -22,14 +22,15 @@ type
       FPerson: TPerson;
     public
       property Person: TPerson read FPerson write FPerson;
-      function Handle(): IState; virtual; abstract;
+      function Handle(): TPersonState; virtual; abstract;
   end;
 
   TStateHealthy = class(TPersonState, IState)
     private
       FTicksNearSickPeople: TDictionary<TPerson, uint8>;
     public
-      function Handle(): IState;
+      constructor Create();
+      function Handle(): TPersonState;
       property TicksNearSickPeople: TDictionary<TPerson, uint8> read FTicksNearSickPeople write FTicksNearSickPeople;
   end;
 
@@ -38,7 +39,7 @@ type
       FTicksUntilResistant: uint16;
     public
       constructor Create(ATimeUntilResistant: uint16);
-      function Handle(): IState;
+      function Handle(): TPersonState;
       property TicksUntilResistand: uint16 read FTicksUntilResistant write FTicksUntilResistant;
   end;
 
@@ -47,13 +48,13 @@ type
       FTicksUntilResistant: uint16;
     public
       constructor Create(ATimeUntilResistant: uint16);
-      function Handle(): IState;
+      function Handle(): TPersonState;
       property TicksUntilResistand: uint16 read FTicksUntilResistant write FTicksUntilResistant;
   end;
 
   TStateResistant = class(TPersonState, IState)
     public
-      function Handle(): IState;
+      function Handle(): TPersonState;
   end;
 
   TMemento = class(TInterfacedObject)
@@ -62,42 +63,61 @@ type
     y: double;
   end;
 
+  TSnapshot = class(TObject)
+    private
+      FTime: uint16;
+      FMementoList: TList<TMemento>;
+    public
+      property Time: uint16 read FTime write FTime;
+      property MementoList: TList<TMemento> read FMementoList write FMementoList;
+      procedure PrintSnapshot();
+  end;
+
   TPerson = class(TObject)
     private
       FPositionVector: TVector2D;
       FVelocityVector: TVectorVelocity;
-      FState: IState;
+      FState: TPersonState;
     public
-      constructor Create(Ax, Ay: double; AState: IState);
+      constructor Create(Ax, Ay: double; AState: TPersonState);
       property PositionVector: TVector2D read FPositionVector write FPositionVector;
       property VelocityVector: TVectorVelocity read FVelocityVector write FVelocityVector;
-      property State: IState read FState write FState;
+      property State: TPersonState read FState write FState;
       function GetMemento(): TMemento;
       procedure Move();
   end;
 
   TPopulation = class(TObject)
     private
-      FPopulationArray: TPersonArray;
+      FPopulationList: TList<TPerson>;
       FSizeN: double;
       FSizeM: double;
+      FTime: uint32;
+      constructor Create;
       class var
         Population: TPopulation;
     public
       class function GetInstance(): TPopulation; static;
       procedure Update();
-      procedure AddPerson(Ax, Ay: double; AState: IState);
-      property PopulationArray: TPersonArray read FPopulationArray write FPopulationArray;
+      procedure AddPerson(Ax, Ay: double; AState: TPersonState);
+      function GetSnapshot(): TSnapshot;
+      property PopulationList: TList<TPerson> read FPopulationList write FPopulationList;
       property SizeN: double read FSizeN write FSizeN;
       property SizeM: double read FSizeM write FSizeM;
+      property Time: uint32 read FTime write FTime;
   end;
 
 { TPopulation }
 
-procedure TPopulation.AddPerson(Ax, Ay: double; AState: IState);
+procedure TPopulation.AddPerson(Ax, Ay: double; AState: TPersonState);
 begin
-  SetLength(FPopulationArray, Length(PopulationArray)-1);
-  FPopulationArray[High(FPopulationArray)]:= TPerson.Create(Ax, Ay, AState);
+  PopulationList.Add(TPerson.Create(Ax, Ay, AState));
+end;
+
+constructor TPopulation.Create;
+begin
+  inherited Create;
+  PopulationList:= TList<TPerson>.Create();
 end;
 
 class function TPopulation.GetInstance: TPopulation;
@@ -107,56 +127,78 @@ begin
   Result:= Population;
 end;
 
+function TPopulation.GetSnapshot: TSnapshot;
+var
+  i: uint16;
+begin
+  Result:= TSnapshot.Create();
+  Result.Time:= Population.GetInstance.Time;
+  Result.MementoList:= TList<TMemento>.Create();
+  for i:= 0 to PopulationList.Count-1 do
+    Result.MementoList.Add(PopulationList[i].GetMemento);
+end;
+
 procedure TPopulation.Update;
 var
   i: uint32;
   NewState: IState;
 begin
-  for i:= 0 to High(PopulationArray) do
+  for i:= 0 to PopulationList.Count-1 do
   begin
-    NewState:= PopulationArray[i].State.Handle;
+    NewState:= PopulationList.Items[i].State.Handle;
     if NewState <> nil then
     begin
-      (PopulationArray[i].State as TPersonState).Free;
-      PopulationArray[i].State:= NewState;
+      //PopulationList.Items[i].State.Free;
+      (NewState as TPersonState).Person:= PopulationList.Items[i];
+      PopulationList.Items[i].State:= (NewState as TPersonState);
     end;
-    PopulationArray[i].Move();
+    PopulationList.Items[i].Move();
   end;
 end;
 
 { TStateHealthy }
 
-function TStateHealthy.Handle: IState;
+constructor TStateHealthy.Create;
+begin
+  inherited;
+  TicksNearSickPeople:= TDictionary<TPerson, uint8>.Create();
+end;
+
+function TStateHealthy.Handle: TPersonState;
 var
-  i: uint32;
+  i: int32;
   Difference: TVector2D;
 begin
   Result:= nil;
-  for i := 0 to High(TPopulation.GetInstance.PopulationArray) do
-  begin
-    Difference:= Person.PositionVector.diff(TPopulation.GetInstance.PopulationArray[i].PositionVector);
-    if Difference.abs() <= 3 then
-    begin
-      if TicksNearSickPeople.ContainsKey(TPopulation.GetInstance.PopulationArray[i]) then
-        TicksNearSickPeople.AddOrSetValue(TPopulation.GetInstance.PopulationArray[i], TicksNearSickPeople[TPopulation.GetInstance.PopulationArray[i]]+1)
-      else
-        TicksNearSickPeople.Add(TPopulation.GetInstance.PopulationArray[i], 0)
-    end
-    else
-      if TicksNearSickPeople.ContainsKey(TPopulation.GetInstance.PopulationArray[i]) then
-        TicksNearSickPeople.Remove(TPopulation.GetInstance.PopulationArray[i]);
-  end;
-  for i:= 0 to TicksNearSickPeople.Keys.Count-1 do
-    if TicksNearSickPeople.Values.ToArray[i] >= 75 then
-      if ((TicksNearSickPeople.Keys.ToArray[i].ClassType = TStateSickAsymptomatic) AND (Random(2) = 0)) OR
-          (TicksNearSickPeople.Keys.ToArray[i].ClassType = TStateSickSymptomatic) then
+  for i := 0 to TPopulation.GetInstance.PopulationList.Count-1 do
+    if ((TPopulation.GetInstance.PopulationList.Items[i].State as TPersonState).ClassType = TStateSickAsymptomatic) OR
+       ((TPopulation.GetInstance.PopulationList.Items[i].State as TPersonState).ClassType = TStateSickSymptomatic) then
+          begin
+            Difference:= Person.PositionVector.diff(TPopulation.GetInstance.PopulationList.Items[i].PositionVector);
+            if Difference.abs() <= 3 then
             begin
-              TicksNearSickPeople.Remove(TicksNearSickPeople.Keys.ToArray[i]);
-              if Random(2) = 0 then
-                Result:= TStateSickSymptomatic.Create(Random(251)+500)
+              if TicksNearSickPeople.ContainsKey(TPopulation.GetInstance.PopulationList.Items[i]) then
+                TicksNearSickPeople.AddOrSetValue(TPopulation.GetInstance.PopulationList.Items[i], TicksNearSickPeople[TPopulation.GetInstance.PopulationList.Items[i]]+1)
               else
-                Result:= TStateSickAsymptomatic.Create(Random(251)+500);
-            end;
+                TicksNearSickPeople.Add(TPopulation.GetInstance.PopulationList.Items[i], 0)
+            end
+            else
+              if TicksNearSickPeople.ContainsKey(TPopulation.GetInstance.PopulationList.Items[i]) then
+                TicksNearSickPeople.Remove(TPopulation.GetInstance.PopulationList.Items[i]);
+          end;
+  for i:= 0 to TicksNearSickPeople.Keys.Count-1 do
+    if ((TicksNearSickPeople.Keys.ToArray[i].State.ClassType = TStateSickAsymptomatic) AND (Random(2) = 0)) OR
+        (TicksNearSickPeople.Keys.ToArray[i].State.ClassType = TStateSickSymptomatic) then
+          if TicksNearSickPeople.Values.ToArray[i] >= 75 then
+          begin
+            TicksNearSickPeople.Remove(TicksNearSickPeople.Keys.ToArray[i]);
+            if Random(2) = 0 then
+              Result:= TStateSickSymptomatic.Create(Random(251)+500)
+            else
+              Result:= TStateSickAsymptomatic.Create(Random(251)+500);
+          end
+          else
+            TicksNearSickPeople.Items[TicksNearSickPeople.Keys.ToArray[i]]:= TicksNearSickPeople.Items[TicksNearSickPeople.Keys.ToArray[i]] + 1;
 end;
 
 { TStateSickAsymptomatic }
@@ -167,7 +209,7 @@ begin
   TicksUntilResistand:= ATimeUntilResistant;
 end;
 
-function TStateSickAsymptomatic.Handle: IState;
+function TStateSickAsymptomatic.Handle: TPersonState;
 begin
   TicksUntilResistand:= TicksUntilResistand-1;
   if TicksUntilResistand = 0 then
@@ -182,7 +224,7 @@ begin
   TicksUntilResistand:= ATimeUntilResistant;
 end;
 
-function TStateSickSymptomatic.Handle: IState;
+function TStateSickSymptomatic.Handle: TPersonState;
 begin
   TicksUntilResistand:= TicksUntilResistand-1;
   if TicksUntilResistand = 0 then
@@ -191,17 +233,19 @@ end;
 
 { TStateResistant }
 
-function TStateResistant.Handle: IState;
+function TStateResistant.Handle: TPersonState;
 begin
   //
 end;
 
 { TPerson }
 
-constructor TPerson.Create(Ax, Ay: double; AState: IState);
+constructor TPerson.Create(Ax, Ay: double; AState: TPersonState);
 begin
   PositionVector:= TVector2D.Create(Ax, Ay);
   State:= AState;
+  (State as TPersonState).Person:= Self;
+  VelocityVector:= TVectorVelocity.Create(1, 1);
 end;
 
 function TPerson.GetMemento: TMemento;
@@ -214,23 +258,52 @@ end;
 
 procedure TPerson.Move;
 begin
-  VelocityVector.SetAngle(Random*6.28319);
   VelocityVector.SetModule(Random*2.5);
+  VelocityVector.SetAngle(Random*6.28319);
+//  VelocityVector.SetAngle(VelocityVector.getAngle+(Random-0.5));
   PositionVector.x:= PositionVector.x + VelocityVector.x; PositionVector.y:= PositionVector.y + VelocityVector.y;
-
+  if (abs(PositionVector.x) > TPopulation.GetInstance.FSizeN/2) OR (abs(PositionVector.y) > TPopulation.GetInstance.FSizeM/2) then
+  begin
+    VelocityVector.x:= VelocityVector.x*-2;
+    VelocityVector.y:= VelocityVector.y*-2;
+    PositionVector.x:= PositionVector.x + VelocityVector.x; PositionVector.y:= PositionVector.y + VelocityVector.y;
+  end;
 end;
 
+{ TSnapshot }
+
+procedure TSnapshot.PrintSnapshot;
+var
+  Current: TMemento;
 begin
-  TPopulation.GetInstance.SizeN:= 100;
-  TPopulation.GetInstance.SizeM:= 100;
-  TPopulation.GetInstance.AddPerson(0, 0, TStateHealthy.Create());
-  TPopulation.GetInstance.AddPerson(0, 0, TStateHealthy.Create());
-  TPopulation.GetInstance.AddPerson(0, 0, TStateHealthy.Create());
-  TPopulation.GetInstance.AddPerson(0, 0, TStateHealthy.Create());
-  TPopulation.GetInstance.AddPerson(0, 0, TStateHealthy.Create());
-  TPopulation.GetInstance.AddPerson(0, 0, TStateHealthy.Create());
-  TPopulation.GetInstance.AddPerson(0, 0, TStateHealthy.Create());
+  WriteLn('Czas: ' + Time.ToString());
+  for Current in MementoList do
+    WriteLn(Current.x.ToString + ' ' + Current.y.ToString + ' ' + Current.State.ClassName);
+end;
+
+var
+  i: uint32;
+
+begin
+  TPopulation.GetInstance.SizeN:= 20;
+  TPopulation.GetInstance.SizeM:= 20;
   TPopulation.GetInstance.AddPerson(0, 0, TStateHealthy.Create());
   TPopulation.GetInstance.AddPerson(0, 0, TStateSickSymptomatic.Create(30000));
+  TPopulation.GetInstance.AddPerson(0, 0, TStateSickSymptomatic.Create(30000));
+  TPopulation.GetInstance.AddPerson(0, 0, TStateSickSymptomatic.Create(30000));
+  TPopulation.GetInstance.AddPerson(0, 0, TStateSickSymptomatic.Create(30000));
+  TPopulation.GetInstance.AddPerson(0, 0, TStateSickSymptomatic.Create(30000));
+  TPopulation.GetInstance.AddPerson(0, 0, TStateSickSymptomatic.Create(30000));
+  TPopulation.GetInstance.AddPerson(0, 0, TStateSickSymptomatic.Create(30000));
+  TPopulation.GetInstance.AddPerson(0, 0, TStateSickSymptomatic.Create(30000));
   TPopulation.GetInstance.AddPerson(0, 0, TStateHealthy.Create());
+  for i := 0 to 30000 do
+  begin
+    TPopulation.GetInstance.Update;
+    if (i mod 1000)=0 then
+      TPopulation.GetInstance.GetSnapshot().PrintSnapshot;
+    TPopulation.GetInstance.Time:= TPopulation.GetInstance.Time + 1;
+  end;
+
+  ReadLn(i);
 end.
