@@ -26,6 +26,15 @@ type
       property Position: TVector read FPosition write FPosition;
       property State: IPersonState read FState write FState;
       function ToString: String; Override;
+      function Copy: TPerson;
+  end;
+
+  TMemento = class(TObject)
+    private
+      FSavedList: TList<TPerson>;
+    public
+      constructor Create(AList: TList<TPerson>);
+      function getList: TList<TPerson>;
   end;
 
   TPeople = class(TObject)
@@ -42,6 +51,10 @@ type
       procedure ClearAll;
       procedure DrawAll;
       property PeopleList: TList<TPerson> read FPeopleList write FPeopleList;
+      function Save: TMemento;
+      procedure Restore(AMemento: TMemento);
+      function CountHealthy: uint32;
+      function CountSick: uint32;
   end;
 
   TPersonStateHealthy = class(TInterfacedObject, IPersonState)
@@ -74,16 +87,32 @@ type
       function Handle: IPersonState;
   end;
 
+  TCaretaker = class(TObject)
+    private
+      FHistory: TStack<TMemento>;
+    public
+      procedure Save;
+      procedure Undo;
+  end;
+
 const
   SizeN = 3;
   SizeM = 3;
   MaxAngleVariation = 0.349066;
   MaxVelocityVariation = 0.01;
   MaxVelocity = 0.1;
-  NewPersonFrequency = 25;
-  InitialPopulation = 3;
+  NewPersonFrequency = 5;
+  InitialPopulation = 20;
+  Scale = 7;
+  TimeToBecomeSick = 75;
 
 { TPerson }
+
+function TPerson.Copy: TPerson;
+begin
+  Result:= TPerson.Create(Position.x, Position.y, FMovementAngle);
+  Result.State:= State.Handle;
+end;
 
 constructor TPerson.Create(Ax, Ay, AMovementAngle: double);
 begin
@@ -108,11 +137,11 @@ begin
     FMovementVelocity:= MaxVelocity;
   if (Position.X > SizeN) OR (Position.Y > SizeM) OR (Position.X < 0) OR (Position.Y < 0) then
   begin
-//    if Random>0.5 then
-//    begin
-//      Result:= True;
-//      Exit;
-//    end;
+    if Random>0.5 then
+    begin
+      Result:= True;
+      Exit;
+    end;
     Position.X:= Min(Position.X, SizeN);
     Position.Y:= Min(Position.Y, SizeM);
     Position.X:= Max(Position.X, 0);
@@ -172,9 +201,9 @@ begin
   Console:= GetStdHandle(STD_OUTPUT_HANDLE);
   for CurrentPerson in FPeopleList do
   begin
-    CursorCoords.X:= Round(CurrentPerson.Position.x+1); CursorCoords.Y:= Round(CurrentPerson.Position.Y+1);
+    CursorCoords.X:= Round(CurrentPerson.Position.x*Scale+1); CursorCoords.Y:= Round(CurrentPerson.Position.Y*Scale+1);
     CursorCoords.X:= Max(CursorCoords.X, 1); CursorCoords.Y:= Max(CursorCoords.Y, 1);
-    CursorCoords.X:= Min(CursorCoords.X, SizeN); CursorCoords.Y:= Min(CursorCoords.Y, SizeM);
+    CursorCoords.X:= Min(CursorCoords.X, SizeN*Scale); CursorCoords.Y:= Min(CursorCoords.Y, SizeM*Scale);
     SetConsoleCursorPosition(Console, CursorCoords);
     if CurrentPerson.State is TPersonStateHealthy then
       SetConsoleTextAttribute(TTextRec(Output).Handle, FOREGROUND_INTENSITY OR FOREGROUND_GREEN)
@@ -197,9 +226,9 @@ begin
   Console:= GetStdHandle(STD_OUTPUT_HANDLE);
   for CurrentPerson in FPeopleList do
   begin
-    CursorCoords.X:= Round(CurrentPerson.Position.x+1); CursorCoords.Y:= Round(CurrentPerson.Position.Y+1);
+    CursorCoords.X:= Round(CurrentPerson.Position.x*Scale+1); CursorCoords.Y:= Round(CurrentPerson.Position.Y*Scale+1);
     CursorCoords.X:= Max(CursorCoords.X, 1); CursorCoords.Y:= Max(CursorCoords.Y, 1);
-    CursorCoords.X:= Min(CursorCoords.X, SizeN); CursorCoords.Y:= Min(CursorCoords.Y, SizeM);
+    CursorCoords.X:= Min(CursorCoords.X, SizeN*Scale); CursorCoords.Y:= Min(CursorCoords.Y, SizeM*Scale);
     SetConsoleCursorPosition(Console, CursorCoords);
     Write(' ');
   end;
@@ -220,25 +249,76 @@ begin
       FPeopleList.Last.State:= TStateSickSymptomatic.Create;
 end;
 
+function TPeople.Save: TMemento;
+var
+  ListCopy: TList<TPerson>;
+  CurrentPerson: TPerson;
+begin
+  ListCopy:= TList<TPerson>.Create;
+  for CurrentPerson in PeopleList do
+    ListCopy.Add(CurrentPerson.Copy);
+  Result:= TMemento.Create(ListCopy);
+end;
+
+procedure TPeople.Restore(AMemento: TMemento);
+begin
+
+end;
+
+function TPeople.CountHealthy: uint32;
+var
+  CurrentPerson: TPerson;
+begin
+  Result:= 0;
+  for CurrentPerson in PeopleList do
+    if (CurrentPerson.State is TPersonStateHealthy) OR (CurrentPerson.State is TPersonStateResistant) then
+      Result:= Result + 1;
+end;
+
+function TPeople.CountSick: uint32;
+var
+  CurrentPerson: TPerson;
+begin
+  Result:= 0;
+  for CurrentPerson in PeopleList do
+    if (CurrentPerson.State is TStateSickAsymptomatic) OR (CurrentPerson.State is TStateSickSymptomatic) then
+      Result:= Result + 1;
+end;
+
 procedure DrawBorder;
 var
   i, j: uint8;
 begin
   Write('╔');
-  for i := 1 to SizeN do
+  for i := 1 to SizeN*Scale do
     Write('═');
   WriteLn('╗');
-  for i := 1 to SizeM do
+  for i := 1 to SizeM*Scale do
   begin
     Write('║');
-    for j := 1 to SizeN do
+    for j := 1 to SizeN*Scale do
       Write(' ');
     WriteLn('║');
   end;
   Write('╚');
-  for i := 1 to SizeN do
+  for i := 1 to SizeN*Scale do
     Write('═');
   WriteLn('╝');
+end;
+
+procedure MakeRaport;
+var
+  Console: Cardinal;
+  CursorCoords: _COORD;
+begin
+  Console:= GetStdHandle(STD_OUTPUT_HANDLE);
+  CursorCoords.X:= 0;
+  CursorCoords.Y:= SizeM*Scale+2;
+  SetConsoleCursorPosition(Console, CursorCoords);
+  SetConsoleTextAttribute(TTextRec(Output).Handle, FOREGROUND_INTENSITY OR FOREGROUND_GREEN);
+  WriteLn('Healthy: ' + TPeople.GetInstance.CountHealthy.ToString + '                           ');
+  SetConsoleTextAttribute(TTextRec(Output).Handle, FOREGROUND_INTENSITY OR FOREGROUND_RED);
+  WriteLn('Sick: ' + TPeople.GetInstance.CountSick.ToString + '                           ');
 end;
 
 { TPersonStateHealthy }
@@ -265,7 +345,7 @@ begin
         FNearbySickPeople.Remove(CurrentPerson);
         Continue;
       end;
-      if FNearbySickPeople[CurrentPerson] = 75 then
+      if FNearbySickPeople[CurrentPerson] = TimeToBecomeSick then
       begin
         if (CurrentPerson.State is TStateSickSymptomatic) OR (Random > 0.5) then
           if Random > 0.5 then
@@ -285,7 +365,7 @@ end;
 
 constructor TStateSickAsymptomatic.Create;
 begin
-  FTimeLeft:= Random(11)+20;
+  FTimeLeft:= Random(251)+500;
 end;
 
 function TStateSickAsymptomatic.Handle: IPersonState;
@@ -303,7 +383,7 @@ end;
 
 constructor TStateSickSymptomatic.Create;
 begin
-  FTimeLeft:= Random(11)+20;
+  FTimeLeft:= Random(251)+500;
 end;
 
 function TStateSickSymptomatic.Handle: IPersonState;
@@ -329,6 +409,37 @@ var
   CursorInfo: CONSOLE_CURSOR_INFO;
   i: uint8;
 
+{ TMemento }
+
+constructor TMemento.Create(AList: TList<TPerson>);
+begin
+  FSavedList:= AList;
+end;
+
+function TMemento.getList: TList<TPerson>;
+begin
+  Result:= FSavedList;
+end;
+
+{ TCaretaker }
+
+procedure TCaretaker.Save;
+begin
+  FHistory.Push(TPeople.GetInstance.Save);
+end;
+
+procedure TCaretaker.Undo;
+var
+  LatestMemento: TMemento;
+begin
+  if FHistory.Count = 0 then
+    Exit;
+  LatestMemento:= FHistory.Pop;
+  TPeople.GetInstance.PeopleList:= LatestMemento.getList;
+  TPeople.GetInstance.ClearAll;
+  TPeople.GetInstance.DrawAll;
+end;
+
 begin
   Randomize;
   Console:= GetStdHandle(STD_OUTPUT_HANDLE);
@@ -344,6 +455,7 @@ begin
     TPeople.GetInstance.MoveAll;
     TPeople.GetInstance.DrawAll;
     TPeople.GetInstance.HandleAll;
+    MakeRaport;
     Sleep(1);
     if i = 0 then
     begin
