@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nodeSet version="1.0">
+  <view uin="lak2bc1nodhimuo1s_v">
+    <property name="$defaultDiagram" value="true" />
+    <property name="$metaclass" value="Package Diagram" />
+    <property name="$name" value="default" />
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TStateEnroute">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="740,400,129,145" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TStateEnroute.Timeleft" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateEnroute.Create()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateEnroute.Handle()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateEnroute.ToString()" />
+      <reference referencedUin="delphi:l_impl:src:Lab5:Lab5.TStateEnroute:Lab5.IState">
+        <property name="sourceAnchor" value="844,400" />
+        <property name="targetAnchor" value="844,310" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TContext">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="260,400,122,132" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TContext.FStrategy" />
+      <reference referencedUin="delphi:e_property:src:Lab5:Lab5.TContext.Strategy" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TContext.Execute()" />
+      <reference referencedUin="delphi:l_ast:src:Lab5:Lab5.TContext.FStrategy">
+        <property name="sourceAnchor" value="382,487" />
+        <property name="targetAnchor" value="420,487" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:Lab5:Lab5.TContext.Strategy">
+        <property name="sourceAnchor" value="382,479" />
+        <property name="targetAnchor" value="420,479" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TStateReturning">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1020,400,129,145" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TStateReturning.Timeleft" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateReturning.Create()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateReturning.Handle()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateReturning.ToString()" />
+      <reference referencedUin="delphi:l_impl:src:Lab5:Lab5.TStateReturning:Lab5.IState">
+        <property name="sourceAnchor" value="1020,405" />
+        <property name="targetAnchor" value="926,309" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TStateWorking">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="880,400,129,145" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TStateWorking.Timeleft" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateWorking.Create()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateWorking.Handle()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateWorking.ToString()" />
+      <reference referencedUin="delphi:l_impl:src:Lab5:Lab5.TStateWorking:Lab5.IState">
+        <property name="sourceAnchor" value="904,400" />
+        <property name="targetAnchor" value="904,310" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.IFirestations">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="160,0,240,95" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.IFirestations.GetProximityIterator(System.Double,System.Double)" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TFirestation">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="440,120,189,267" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TFirestation.Fx" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TFirestation.Fy" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TFirestation.FFiretrucks" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestation.GetFiretruck(System.Cardinal)" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestation.SetFiretruck(System.Cardinal,Lab5.TFiretruck)" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestation.Create(System.Double,System.Double)" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestation.UpdateFiretrucks()" />
+      <reference referencedUin="delphi:e_property:src:Lab5:Lab5.TFirestation.x" />
+      <reference referencedUin="delphi:e_property:src:Lab5:Lab5.TFirestation.y" />
+      <reference referencedUin="delphi:e_property:src:Lab5:Lab5.TFirestation.Firetrucks[System.UInt32]" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestation.GetReadyFiretruck()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestation.ToString()" />
+      <reference referencedUin="delphi:l_ast:src:Lab5:Lab5.TFirestation.FFiretrucks">
+        <property name="sourceAnchor" value="629,281" />
+        <property name="targetAnchor" value="660,281" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:Lab5:Lab5.TFirestation.Firetrucks[System.UInt32]">
+        <property name="sourceAnchor" value="629,273" />
+        <property name="targetAnchor" value="660,273" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TFiretruck">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="660,200,129,162" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TFiretruck.FState" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFiretruck.Create()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFiretruck.Send()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFiretruck.Update()" />
+      <reference referencedUin="delphi:e_property:src:Lab5:Lab5.TFiretruck.State" />
+      <reference referencedUin="delphi:l_impl:src:Lab5:Lab5.TFiretruck:Lab5.IFiretruck">
+        <property name="sourceAnchor" value="724,200" />
+        <property name="targetAnchor" value="724,175" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:Lab5:Lab5.TFiretruck.FState">
+        <property name="sourceAnchor" value="789,247" />
+        <property name="targetAnchor" value="820,247" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:Lab5:Lab5.TFiretruck.State">
+        <property name="sourceAnchor" value="789,255" />
+        <property name="targetAnchor" value="820,255" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.IFirestationIterator">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="60,380,121,110" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.IFirestationIterator.Next()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.IFirestationIterator.HasNext()" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.IFiretruck">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="680,80,90,95" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.IFiretruck.Send()" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.IStrategy">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="420,443,90,95" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.IStrategy.Execute()" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TFirestations">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="160,120,240,250" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TFirestations.FFirestationList" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestations.Create()" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TFirestations.Firestations" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestations.GetInstance()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestations.NotifyAll()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestations.AddObserver(Lab5.TFirestation)" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestations.RemoveObserver(Lab5.TFirestation)" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestations.UpdateFirestations()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestations.GetProximityIterator(System.Double,System.Double)" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestations.ToString()" />
+      <reference referencedUin="delphi:l_impl:src:Lab5:Lab5.TFirestations:Lab5.IFirestations">
+        <property name="sourceAnchor" value="280,120" />
+        <property name="targetAnchor" value="280,95" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:Lab5:Lab5.TFirestations.Firestations">
+        <property name="sourceAnchor" value="400,362" />
+        <property name="targetAnchor" value="392,370" />
+        <property name="bendpoints" value="433,362,433,403,392,403" />
+        <property name="bounds_setted_by_user" value="True" />
+      </reference>
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TFirestations.Field1" />
+      <reference referencedUin="delphi:l_ast:src:Lab5:Lab5.TFirestations.Field1">
+        <property name="sourceAnchor" value="400,228" />
+        <property name="targetAnchor" value="440,228" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TFirestationProximityIterator">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="19,503,231,145" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.TFirestationProximityIterator.FFirestationStack" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestationProximityIterator.Create(System.Generics.Collections.TDictionary&lt;Lab5.TFirestation,System.Double&gt;)" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestationProximityIterator.Next()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFirestationProximityIterator.HasNext()" />
+      <reference referencedUin="delphi:l_impl:src:Lab5:Lab5.TFirestationProximityIterator:Lab5.IFirestationIterator">
+        <property name="sourceAnchor" value="120,503" />
+        <property name="targetAnchor" value="120,490" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TThreatStrategy">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="480,563,129,98" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TThreatStrategy.Execute()" />
+      <reference referencedUin="delphi:l_impl:src:Lab5:Lab5.TThreatStrategy:Lab5.IStrategy">
+        <property name="sourceAnchor" value="495,563" />
+        <property name="targetAnchor" value="495,538" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TFireStrategy">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="340,560,129,98" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TFireStrategy.Execute()" />
+      <reference referencedUin="delphi:l_impl:src:Lab5:Lab5.TFireStrategy:Lab5.IStrategy">
+        <property name="sourceAnchor" value="444,560" />
+        <property name="targetAnchor" value="444,538" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.@unitclass">
+      <property name="$shortcutReference" value="true" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.@unitclass.FirestationLocations" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.@unitclass.i" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.@unitclass.CurrentFirestation" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.@unitclass.Console" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.@unitclass.ZeroCoords" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.@unitclass.CursorInfo" />
+      <reference referencedUin="delphi:e_field:src:Lab5:Lab5.@unitclass.AlarmChance" />
+      <reference referencedUin="delphi:l_ast:src:Lab5:Lab5.@unitclass.CurrentFirestation" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TStateReady">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="600,400,129,113" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateReady.Handle()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.TStateReady.ToString()" />
+      <reference referencedUin="delphi:l_impl:src:Lab5:Lab5.TStateReady:Lab5.IState">
+        <property name="sourceAnchor" value="722,400" />
+        <property name="targetAnchor" value="820,306" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:Lab5:Lab5.IState">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="820,200,109,110" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.IState.Handle()" />
+      <reference referencedUin="delphi:e_method:src:Lab5:Lab5.IState.ToString()" />
+    </reference>
+  </view>
+</nodeSet>

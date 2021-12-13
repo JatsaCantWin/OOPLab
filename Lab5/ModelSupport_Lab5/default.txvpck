@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nodeSet version="1.0">
+  <view uin="wr2tisilwig47mmnt_v">
+    <property name="$defaultDiagram" value="true" />
+    <property name="$metaclass" value="Package Diagram" />
+    <property name="$name" value="default" />
+    <reference referencedUin="design:view:::lak2bc1nodhimuo1s_v">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="10,10,179,378" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.@unitclass" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.IFirestationIterator" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.IFirestations" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.IFiretruck" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.IState" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.IStrategy" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TContext" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TFirestation" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TFirestationProximityIterator" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TFirestations" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TFireStrategy" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TFiretruck" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TStateEnroute" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TStateReady" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TStateReturning" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TStateWorking" />
+      <reference referencedUin="delphi:e_class:src:Lab5:Lab5.TThreatStrategy" />
+    </reference>
+  </view>
+</nodeSet>

@@ -5,7 +5,9 @@ program Lab5;
 {$R *.res}
 
 uses
-  System.SysUtils, System.Generics.Collections, Windows;
+  System.SysUtils,
+  System.Generics.Collections,
+  Windows;
 
 const
   FirestationLocations: array [1..10] of array [1..2] of double =
@@ -88,8 +90,10 @@ TFirestation = class(TObject)
     procedure UpdateFiretrucks;
     property x: double read Fx write Fx;
     property y: double read Fy write Fy;
-    property Firetrucks[Index: uint32]: TFiretruck read GetFiretruck write SetFiretruck;
-    function GetReadyFiretruck: TFiretruck;
+                /// <link>aggregation</link>
+                property Firetrucks[Index: uint32]: TFiretruck read GetFiretruck
+                  write SetFiretruck;
+                function GetReadyFiretruck: TFiretruck;
     function ToString: String; override;
 end;
 
@@ -102,14 +106,17 @@ IFirestations = interface(IInterface)
   function GetProximityIterator(Ax, Ay: double): IFirestationIterator;
 end;
 
-TFirestations = class(TInterfacedObject, IFirestations)
-  private
+        TFirestations = class(TInterfacedObject, IFirestations)
+        private
     FFirestationList: TList<TFirestation>;
     Constructor Create;
     class var
       Firestations: TFirestations;
-  public
-    class function GetInstance: TFirestations;
+        public
+        var
+                /// <link>aggregation</link>
+                Field1: TFirestation;
+                class function GetInstance: TFirestations;
     procedure NotifyAll;
     procedure AddObserver(AObserver: TFirestation);
     procedure RemoveObserver(AObserver: TFirestation);
@@ -144,8 +151,9 @@ TContext = class(TObject)
     class var
       FStrategy: IStrategy;
   public
-    class property Strategy: IStrategy write FStrategy;
-    class procedure Execute;
+                /// <link>aggregationByValue</link>
+                class property Strategy: IStrategy write FStrategy;
+                class procedure Execute;
 end;
 
 { TStateReady }
